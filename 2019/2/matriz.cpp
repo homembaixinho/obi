@@ -6,47 +6,29 @@
 
 using namespace std;
 #define endl "\n";
-#define MAXLC 1010
+#define MAXLC 1001
 
-int l, c;
 int a[MAXLC][MAXLC];
-int b[MAXLC][MAXLC];
+int h[MAXLC];
+int l, c;
 
-int hist(int x) {
-  int *linha = b[x];
+int rect() {
   stack<int> s;
+  int i = 0, t;
+  int res = 0;
 
-  int area = 0, res=0;
-  int topo;
-  
-  int i = 0;
-  while (i < c) {
-    if (s.empty() || linha[s.top()] <= linha[i])
-      s.push(i++);
+  while (i < c-1) {
+    if (s.empty() || h[s.top()] <= h[i]) s.push(i++);
     else {
-      topo = linha[s.top()]; s.pop();
-      area = s.empty()? (topo+1) * (i+1) : (topo+1) * (i - s.top());
-      res = max(res, area);
+      t = s.top(); s.pop();
+      res = max(res, (h[t]+1) * (s.empty() ? i + 1: i - s.top()));
     }
   }
 
-  while (!s.empty()) {
-    topo = linha[s.top()]; s.pop();
-    area = s.empty()? (topo+1) * (i+1) : (topo+1) * (i - s.top());
-    res = max(res, area);
+  while(!s.empty()) {
+    t = s.top(); s.pop();
+    res = max(res, (h[t]+1) * (s.empty() ? i + 1: i - s.top()));
   }
-
-  return res;
-}
-
-int solve() {
-  int res = hist(1);
-  
-  for (int i = 2; i < l; i++)
-    for (int j = 1; j < c; j++) {
-      if (b[i][j]) b[i][j] += b[i-1][j];
-      res = max(res, hist(i));
-    }
 
   return res;
 }
@@ -56,13 +38,17 @@ int main() {
   cin.tie(0);
   
   cin >> l >> c;
-  for (int i = 1; i <= l; i++)
-    for (int j = 1; j <= c; j++)
+  for (int i = 0; i < l; i++)
+    for (int j = 0; j < c; j++)
       cin >> a[i][j];
 
-  for (int i = 1; i < l; i++)
-    for (int j = 1; j < c; j++)
-      b[i][j] = a[i][j] + a[i+1][j+1] <= a[i+1][j] + a[i][j+1];
+  int res = min(l, c);
 
-  cout << solve() << endl;
+  for (int i = 0; i < l-1; i++) {
+    for (int j = 0; j < c-1; j++) 
+      h[j] = a[i][j] + a[i+1][j+1] <= a[i+1][j] + a[i][j+1] ? h[j] + 1 : 0;
+    res = max(res, rect());
+  }
+
+  cout << res << endl;
 }
