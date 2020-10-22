@@ -4,7 +4,6 @@
 #include <iostream>
 #include <cstring>
 
-
 using namespace std;
 #define endl "\n"
 #define maxn 100001
