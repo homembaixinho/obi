@@ -1,4 +1,4 @@
-// Impedido! 
+// Impedimento!
 
 #include <iostream>
 using namespace std;
